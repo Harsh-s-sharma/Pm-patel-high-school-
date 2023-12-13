@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Text to Image</title>
+  <style>
+    /* Add some basic styling to the form */
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="file"] {
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <form>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required>
+    <!-- <label for="phone">Phone Number:</label>
+    <input type="text" id="phone" name="phone" required> -->
+    <label for="image">Upload Image:</label>
+    <input type="file" id="image" name="image" accept="image/*" required>
+    <button type="button" onclick="addTextToImage()">Add Text to Image</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    function addTextToImage() {
+      // Get the form values
+      var name = document.getElementById('name').value;
+      // var phone = document.getElementById('phone').value;
+      var image = document.getElementById('image').files[0];
+
+      // Create a FileReader object to read the image file
+      var reader = new FileReader();
+      reader.onload = function (event) {
+        // Create an image element
+        var img = new Image();
+        img.onload = function () {
+          // Create a canvas element
+          var canvas = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          // Get the 2D context of the canvas
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          // Add text to the canvas
+          ctx.font = '30px Arial';
+          ctx.fillStyle = 'Black';
+          ctx.fillText(name, 340, 390);
+          // ctx.fillText(phone, 50, 100);
+
+
+          // Convert the canvas to a data URL
+          var editedImage = canvas.toDataURL();
+
+          // Display the edited image
+          var resultDiv = document.getElementById('result');
+          resultDiv.innerHTML = '<img src="' + editedImage + '">';
+
+          // Provide an option to download the edited image
+          var downloadLink = document.createElement('a');
+          downloadLink.href = editedImage;
+          downloadLink.download = 'edited_image.png';
+          downloadLink.innerHTML = 'Download Edited Image';
+          resultDiv.appendChild(downloadLink);
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(image);
+    }
+  </script>
+</body>
+
+</html>
